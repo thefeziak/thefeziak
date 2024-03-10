@@ -1,0 +1,4 @@
+- 👋 Hi, I’m @fifi75598
+- 👀 I’m interested in python
+- 🌱 I’m currently learning bash or shell
+- 💞️ I’m looking to collaborate on ...
