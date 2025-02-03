@@ -1,4 +1,4 @@
-### 👋 Hi, I’m fifi75598
+### 👋 Hi, I’m Feziak
 
 - I`m a developer with several years of experience.
 - you can reach out to me via maxeqxmail@gmail.com
