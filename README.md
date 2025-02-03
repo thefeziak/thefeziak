@@ -1,6 +1,6 @@
 ### 👋 Hi, I’m fifi75598
 
-- I'm a Full-stack Developer with over four years of experience developing high-performance and scalable applications using modern technologies.
+- I`m a developer with several years of experience.
 - you can reach out to me via maxeqxmail@gmail.com
 
 **Main Technologies I work with:**
