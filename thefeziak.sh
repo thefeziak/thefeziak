@@ -37,7 +37,7 @@ echo "##########################################################################
 
     0)
       wget --no-hsts -O /tmp/rootfs.tar.xz \
-      "https://github.com/termux/proot-distro/releases/download/v3.10.0/debian-${ARCH}-pd-v3.10.0.tar.xz"
+      "https://github.com/termux/proot-distro/releases/download/v3.18.1/debian-${ARCH}-pd-v3.18.1.tar.xz"
       apt download xz-utils
       deb_file=$(find "$ROOTFS_DIR" -name "*.deb" -type f)
       dpkg -x "$deb_file" ~/.local/
