@@ -2,11 +2,13 @@
 
 ROOTFS_DIR=/home/container
 
+# Alpine settings
 ALPINE_VERSION="3.18"
 ALPINE_FULL_VERSION="3.18.3"
 APK_TOOLS_VERSION="2.14.0-r2"
 PROOT_VERSION="5.3.0"
 
+# Debian/Ubuntu settings
 DEBIAN_VERSION="bullseye"
 UBUNTU_VERSION="focal"
 
@@ -47,6 +49,9 @@ else
       curl -Lo /tmp/rootfs.tar.gz \
       "https://deb.debian.org/debian/dists/${DEBIAN_VERSION}/main/installer-${ARCH_ALT}/current/images/netboot/netboot.tar.gz"
       tar -xzf /tmp/rootfs.tar.gz -C $ROOTFS_DIR
+
+      curl -Lo $ROOTFS_DIR/usr/local/bin/proot "https://github.com/proot-me/proot/releases/download/v${PROOT_VERSION}/proot-v${PROOT_VERSION}-${ARCH}-static"
+      chmod 755 $ROOTFS_DIR/usr/local/bin/proot
       DISTRO_NAME="debian"
       ;;
     3)
@@ -54,6 +59,9 @@ else
       curl -Lo /tmp/rootfs.tar.gz \
       "https://cloud-images.ubuntu.com/minimal/releases/${UBUNTU_VERSION}/release/ubuntu-minimal-cloudimg-${ARCH_ALT}-root.tar.xz"
       tar -xf /tmp/rootfs.tar.gz -C $ROOTFS_DIR
+
+      curl -Lo $ROOTFS_DIR/usr/local/bin/proot "https://github.com/proot-me/proot/releases/download/v${PROOT_VERSION}/proot-v${PROOT_VERSION}-${ARCH}-static"
+      chmod 755 $ROOTFS_DIR/usr/local/bin/proot
       DISTRO_NAME="ubuntu"
       ;;
     *)
