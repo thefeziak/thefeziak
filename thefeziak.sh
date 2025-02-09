@@ -2,9 +2,11 @@
 
 ROOTFS_DIR=/home/container
 
-export PATH=$PATH:~/.local/usr/bin
-
+ALPINE_VERSION="3.18"
+ALPINE_FULL_VERSION="3.18.3"
+APK_TOOLS_VERSION="2.14.0-r2"
 PROOT_VERSION="5.3.0"
+
 ARCH=$(uname -m)
 
 if [ "$ARCH" = "x86_64" ]; then
@@ -16,91 +18,36 @@ else
   exit 1
 fi
 
-if [ ! -e "$ROOTFS_DIR/.installed" ]; then
-echo "#######################################################################################"
-echo "#                                                                                     #"
-echo "#                                    > thefeziak <                                    #"
-echo "#                                                                                     #"
-echo "#                                      FREE VPS                                       #"
-echo "#                                                                                     #"
-echo "#                                                                                     #"
-echo "#######################################################################################"
-
-  echo ""
-  echo "* [0] Debian"
-  echo "* [1] Ubuntu"
-  echo "* [2] Alpine"
-
-  read -p "Enter OS (0-2): " input
-
-  case $input in
-
-    0)
-      wget --no-hsts -O /tmp/rootfs.tar.xz \
-      "https://github.com/termux/proot-distro/releases/download/v3.18.1/debian-${ARCH}-pd-v3.18.1.tar.xz"
-      apt download xz-utils
-      deb_file=$(find "$ROOTFS_DIR" -name "*.deb" -type f)
-      dpkg -x "$deb_file" ~/.local/
-      rm "$deb_file"
-      tar -xJf /tmp/rootfs.tar.xz -C "$ROOTFS_DIR"
-      mkdir $ROOTFS_DIR/home/container/ -p
-
-      wget -O $ROOTFS_DIR/home/container/installer.sh \
-      "https://github.com/abdalla435/VPS-Pterodactyl-EGG/raw/main/private.sh"
-      wget -O $ROOTFS_DIR/home/container/.bashrc \
-      "https://github.com/abdalla435/VPS-Pterodactyl-EGG/raw/main/.bashrc"
-      wget -O $ROOTFS_DIR/home/container/style.sh \
-      "https://github.com/abdalla435/VPS-Pterodactyl-EGG/raw/main/style.sh"
-      ;;
-
-    1)
-      wget --no-hsts -O /tmp/rootfs.tar.gz \
-      "http://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.4-base-${ARCH_ALT}.tar.gz"
-      tar -xf /tmp/rootfs.tar.gz -C "$ROOTFS_DIR"
-      mkdir $ROOTFS_DIR/home/container/ -p
-
-      wget -O $ROOTFS_DIR/home/container/installer.sh \
-      "https://github.com/abdalla435/VPS-Pterodactyl-EGG/raw/main/private.sh"
-      wget -O $ROOTFS_DIR/home/container/.bashrc \
-      "https://github.com/abdalla435/VPS-Pterodactyl-EGG/raw/main/.bashrc"
-      wget -O $ROOTFS_DIR/home/container/style.sh \
-      "https://github.com/abdalla435/VPS-Pterodactyl-EGG/raw/main/style.sh"
-      ;;
-
-    2)
-      wget --no-hsts -O /tmp/rootfs.tar.gz \
-      "https://dl-cdn.alpinelinux.org/alpine/v3.18/releases/x86_64/alpine-minirootfs-3.18.3-${ARCH}.tar.gz"
-      tar -xf /tmp/rootfs.tar.gz -C "$ROOTFS_DIR"
-      mkdir $ROOTFS_DIR/etc/profile.d/ -p
-      
-      wget -O $ROOTFS_DIR/home/container/installer.sh \
-      "https://github.com/abdalla435/VPS-Pterodactyl-EGG/raw/main/private.sh"
-      wget -O $ROOTFS_DIR/home/container/.bashrc \
-      "https://github.com/abdalla435/VPS-Pterodactyl-EGG/raw/main/.bashrc"
-      wget -O $ROOTFS_DIR/home/container/style.sh \
-      "https://github.com/abdalla435/VPS-Pterodactyl-EGG/raw/main/style.sh"
-      ;;
-
-    *)
-      echo "Invalid selection. Exiting."
-      exit 1
-      ;;
-  esac
+if [ ! -e $ROOTFS_DIR/.installed ]; then
+    curl -Lo /tmp/rootfs.tar.gz \
+    "https://dl-cdn.alpinelinux.org/alpine/v${ALPINE_VERSION}/releases/${ARCH}/alpine-minirootfs-${ALPINE_FULL_VERSION}-${ARCH}.tar.gz"
+    tar -xzf /tmp/rootfs.tar.gz -C $ROOTFS_DIR
 fi
 
-if [ ! -e "$ROOTFS_DIR/.installed" ]; then
-    mkdir -p "$ROOTFS_DIR/usr/local/bin"
-    wget --no-hsts -O "$ROOTFS_DIR/usr/local/bin/proot" "https://github.com/proot-me/proot/releases/download/v${PROOT_VERSION}/proot-v${PROOT_VERSION}-${ARCH}-static"
-    chmod 755 "$ROOTFS_DIR/usr/local/bin/proot"
+if [ ! -e $ROOTFS_DIR/.installed ]; then
+    curl -Lo /tmp/apk-tools-static.apk "https://dl-cdn.alpinelinux.org/alpine/v${ALPINE_VERSION}/main/${ARCH}/apk-tools-static-${APK_TOOLS_VERSION}.apk"
+    curl -Lo /tmp/gotty.tar.gz "https://github.com/sorenisanerd/gotty/releases/download/v1.5.0/gotty_v1.5.0_linux_${ARCH_ALT}.tar.gz"
+    curl -Lo $ROOTFS_DIR/usr/local/bin/proot "https://github.com/proot-me/proot/releases/download/v${PROOT_VERSION}/proot-v${PROOT_VERSION}-${ARCH}-static"
+    tar -xzf /tmp/apk-tools-static.apk -C /tmp/
+    tar -xzf /tmp/gotty.tar.gz -C $ROOTFS_DIR/usr/local/bin
+    /tmp/sbin/apk.static -X "https://dl-cdn.alpinelinux.org/alpine/v${ALPINE_VERSION}/main/" -U --allow-untrusted --root $ROOTFS_DIR add alpine-base apk-tools
+    chmod 755 $ROOTFS_DIR/usr/local/bin/proot $ROOTFS_DIR/usr/local/bin/gotty
 fi
 
-if [ ! -e "$ROOTFS_DIR/.installed" ]; then
-    printf "nameserver 1.1.1.1\nnameserver 1.0.0.1" > "${ROOTFS_DIR}/etc/resolv.conf"
-    rm -rf /tmp/rootfs.tar.xz /tmp/sbin
-    touch "$ROOTFS_DIR/.installed"
+if [ ! -e $ROOTFS_DIR/.installed ]; then
+    printf "nameserver 1.1.1.1\nnameserver 1.0.0.1" > ${ROOTFS_DIR}/etc/resolv.conf
+    rm -rf /tmp/apk-tools-static.apk /tmp/rootfs.tar.gz /tmp/sbin
+    touch $ROOTFS_DIR/.installed
 fi
 
-"$ROOTFS_DIR/usr/local/bin/proot" \
+$ROOTFS_DIR/usr/local/bin/proot \
 --rootfs="${ROOTFS_DIR}" \
--0 -w "/root" -b /dev -b /sys -b /proc -b /etc/resolv.conf --kill-on-exit \
-/bin/bash
+--link2symlink \
+--kill-on-exit \
+--root-id \
+--cwd=/root \
+--bind=/proc \
+--bind=/dev \
+--bind=/sys \
+--bind=/tmp \
+/bin/sh
