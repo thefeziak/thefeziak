@@ -3,9 +3,9 @@ import sys
 import logging
 from datetime import datetime
 
-MAIN_PROXY_HOST = "45.159.223.47"
-MAIN_PROXY_PORT = 25565
-LISTEN_PORT = 1250
+MAIN_PROXY_HOST = "x"
+MAIN_PROXY_PORT = 1
+LISTEN_PORT = 1
 
 logger = logging.getLogger("forwarder")
 logger.setLevel(logging.DEBUG)
@@ -90,3 +90,4 @@ if __name__ == "__main__":
         asyncio.run(main())
     except KeyboardInterrupt:
         pass#logger.info("Forwarder manually stopped")
+
