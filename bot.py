@@ -3,9 +3,9 @@ import sys
 import logging
 from datetime import datetime
 
-MAIN_PROXY_HOST = "128.204.223.120"
-MAIN_PROXY_PORT = 1337
-LISTEN_PORT = 25565
+MAIN_PROXY_HOST = "45.159.223.47"
+MAIN_PROXY_PORT = 25565
+LISTEN_PORT = 1250
 
 logger = logging.getLogger("forwarder")
 logger.setLevel(logging.DEBUG)
