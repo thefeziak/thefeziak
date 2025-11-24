@@ -1,7 +1,6 @@
 ### 👋 Hi, I’m Feziak
 
 - I`m a developer with several years of experience.
-- you can reach out to me via maxeqxmail@gmail.com
 
 **Main Technologies I work with:**
 <div>
